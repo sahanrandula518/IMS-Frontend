@@ -1,21 +1,45 @@
+/*
+    SAHAN
+
+ */
+
 import React, { Component } from "react";
 import {connect} from 'react-redux';
-
-
+import axio from 'axios';
 import {fetchUser} from '../../actions/user';
 import UserCreateForm from '../forms/UserCreateForm';
 import '../../style.css';
-// /, backgroundColor:  'rgb(239,240,241)'
+import UserRow from './UserRow';
 
 export class Users extends Component {
 
+  constructor(props){
+    super(props);
 
-componentDidMount() {
-  this.props.fetchUser();
-}
+    this.state = {
+      users: []
+    }
 
+  }
 
+  componentDidMount() {
+      axio.get('http://localhost:5000/api/users')
+          .then(res => {
+              this.setState({
+                users: res.data
+              })
+            console.log(res.data)
+          })
+          .catch(res => {
+            console.log(res.error)
+          });
+  }
 
+  user_row(){
+    return this.state.users.map(function (object, i) {
+        return <UserRow obj={object} key={i}/>
+    });
+  }
 
   render() {
     return (
@@ -151,138 +175,9 @@ componentDidMount() {
                     <th>Action</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  <tr className="positive">
-                    <td>sb-454844-4548</td>
-                    <td>Name</td>
-                    <td>None</td>
-                    <td>
-                      <i className="icon checkmark"></i>
-                      <span className="badge badge-success">Approved</span>
-                    </td>
-                    <td>
-                      <span>
-                        <button
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                        >
-                          <i className="trash icon"></i>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline-primary btn-sm"
-                          style={{ marginLeft: 5 }}
-                        >
-                          <i className="pencil alternate icon"></i>
-                        </button>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr className="positive">
-                    <td>sb-454844-4548</td>
-                    <td>Name</td>
-                    <td>None</td>
-                    <td>
-                      <i className="icon checkmark"></i>
-                      <span className="badge badge-success">Approved</span>
-                    </td>
-                    <td>
-                      <span>
-                        <button
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                        >
-                          <i className="trash icon"></i>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline-primary btn-sm"
-                          style={{ marginLeft: 5 }}
-                        >
-                          <i className="pencil alternate icon"></i>
-                        </button>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr className="positive">
-                    <td>sb-454844-4548</td>
-                    <td>Name</td>
-                    <td>None</td>
-                    <td>
-                      <i className="icon checkmark"></i>
-                      <span className="badge badge-success">Approved</span>
-                    </td>
-                    <td>
-                      <span>
-                        <button
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                        >
-                          <i className="trash icon"></i>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline-primary btn-sm"
-                          style={{ marginLeft: 5 }}
-                        >
-                          <i className="pencil alternate icon"></i>
-                        </button>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr className="positive">
-                    <td>sb-454844-4548</td>
-                    <td>Name</td>
-                    <td>None</td>
-                    <td>
-                      <i className="icon checkmark"></i>
-                      <span className="badge badge-success">Approved</span>
-                    </td>
-                    <td>
-                      <span>
-                        <button
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                        >
-                          <i className="trash icon"></i>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline-primary btn-sm"
-                          style={{ marginLeft: 5 }}
-                        >
-                          <i className="pencil alternate icon"></i>
-                        </button>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr className="positive">
-                    <td>sb-454844-4548</td>
-                    <td>Name</td>
-                    <td>None</td>
-                    <td>
-                      <i className="icon checkmark"></i>
-                      <span className="badge badge-success">Approved</span>
-                    </td>
-                    <td>
-                     
-                      <span>
-                        <button
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                        >
-                          <i className="trash icon"></i>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline-primary btn-sm"
-                          style={{ marginLeft: 5 }}
-                        >
-                          <i className="pencil alternate icon"></i>
-                        </button>
-                      </span>
-                    </td>
-                  </tr>
+                  {this.user_row()}
                 </tbody>
               </table>
             </div>
