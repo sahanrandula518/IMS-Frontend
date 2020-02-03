@@ -1,6 +1,7 @@
 import { Field, reduxForm } from "redux-form";
 
 import React, { Component } from "react";
+import axio from 'axios';
 
 export class UserCreateForm extends Component {
   renderField = ({ input, label, type, meta: { touched, error } }) => (
@@ -12,9 +13,46 @@ export class UserCreateForm extends Component {
     </div>
   );
 
-  onSubmit = formValues => {
-    console.log(formValues);
-  };
+  constructor(props) {
+      super(props);
+
+      this.state = {
+          name: '',
+          department_id: ''
+      }
+
+      this.handleChange = this.handleChange.bind(this);
+      this.submitFrom = this.submitFrom.bind(this);
+  }
+
+    handleChange(e){
+        e.preventDefault();
+        const name = e.target.name
+        const value = e.target.value
+        this.setState({[name]: value})
+    }
+
+    submitFrom(e){
+        e.preventDefault();
+
+        const userObj = {
+            name: this.state.name,
+            department_id: this.state.department_id
+        };
+
+        axio.post('http://localhost:5000/api/users', userObj)
+            .then(res => {
+                console.log(res.data)
+            })
+            .catch(err => {
+                console.log(err.response)
+            });
+
+        this.setState({
+            name: '',
+            department_id: ''
+        })
+    }
 
   renderDropDownField = ({label, meta: { touched, error } }) => (
     <div class="form-group">
@@ -35,35 +73,21 @@ export class UserCreateForm extends Component {
     </div>
   );
   render() {
-    const { handleSubmit, submitting } = this.props;
     return (
-      <form onSubmit={handleSubmit(this.onSubmit)}>
-       
-        <Field
-          name="username"
-          component={this.renderField}
-          label=" Name"
-        />
-       
-        <Field
-          name="department "
-          type="select"
-          component={this.renderField}
-          label="Department "
-        />
+      <form onSubmit={this.submitFrom}>
+          <div className="form-group">
+              <label>Name</label>
+            <input type="text" name="name" className="form-control"  onChange={this.handleChange} value={this.state.name} placeholder="Name"/>
+          </div>
 
-        <Field
-          name="Status"
-          type="select"
-          component={this.renderField}
-          label="Status"
-        />
-       
-        <div style={{visibility: 'hidden'}}>
-          <button type="submit" disabled={submitting}>
-            Submit
-          </button>
-        </div>
+          <div className="form-group">
+              <label>Department ID</label>
+             <input type="text" name="department_id" className="form-control" onChange={this.handleChange} value={this.state.department_id} placeholder="Department ID"/>
+          </div>
+
+          <div className="form-group">
+             <button className="btn btn-success" type="submit">Submit</button>
+          </div>
       </form>
     );
   }
